@@ -1,7 +1,7 @@
 <template>
   <div id="app-info">
     <div>
-      <img src="assets/logo.svg">
+      <img src="/assets/logo.svg">
       <h1>Electron Vue Vite</h1>
       <h2>Boilerplate</h2>
       <code>{{ info }}</code>

@@ -14,6 +14,12 @@ const config = {
     allowToChangeInstallationDirectory: true,
     shortcutName: 'Electron App'
   },
+  mac: {
+    target: [
+      { target: 'dmg', arch: 'arm64' },
+      { target: 'dmg', arch: 'x64' }
+    ]
+  },
   win: {
     target: 'nsis'
   },

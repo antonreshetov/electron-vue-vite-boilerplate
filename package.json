@@ -1,6 +1,6 @@
 {
   "name": "electron-vue-vite-boilerplate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Electron & Vue 3 application",
   "main": "build/src/main/index.js",
   "scripts": {

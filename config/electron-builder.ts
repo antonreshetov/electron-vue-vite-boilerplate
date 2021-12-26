@@ -1,12 +1,10 @@
-const path = require('path')
+import type { Configuration } from 'electron-builder'
+import path from 'path'
 
-/**
- * https://www.electron.build/configuration/configuration
- */
-const config = {
+export default {
   appId: 'com.example.app',
   directories: {
-    output: path.resolve(__dirname, '../dist')
+    output: path.resolve(__dirname, '../../dist')
   },
   nsis: {
     oneClick: false,
@@ -31,18 +29,18 @@ const config = {
     '!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}',
     '!**/node_modules/*.d.ts',
     '!**/node_modules/.bin',
-    '!src/renderer',
     '!config',
     '!README.md',
     '!scripts',
-    '!build',
+    '!config',
     '!dist',
+    '!src',
+    '!build',
+    'build/src/main/**/*',
     {
       from: 'build/renderer',
       to: 'renderer',
       filter: ['**/*']
     }
   ]
-}
-
-module.exports = config
+} as Configuration

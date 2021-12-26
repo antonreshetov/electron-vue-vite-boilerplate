@@ -3,30 +3,14 @@
   <AppInfo />
 </template>
 
-<script>
+<script setup lang="ts">
 import AppInfo from './components/AppInfo.vue'
-import { ipc } from '@/electron'
-
-export default {
-  name: 'App',
-
-  components: {
-    AppInfo
-  },
-
-  data () {
-    return {
-      x: 2
-    }
-  },
-
-  created () {
-    ipc.send('message', 'Hello from App.vue!', () => {})
-  }
-}
 </script>
 
 <style lang="scss">
+body {
+  margin: 0;
+}
 .app {
   &-title-bar {
     position: absolute;

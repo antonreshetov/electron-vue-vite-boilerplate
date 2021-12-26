@@ -1,13 +1,16 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
-const path = require('path')
-const os = require('os')
-const store = require('./store')
+import { app, BrowserWindow, ipcMain } from 'electron'
+import path from 'path'
+import os from 'os'
+import { store } from './store'
+
+const isDev = process.env.NODE_ENV === 'development'
 
 function createWindow () {
+  const bounds = store.app.get('bounds')
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    ...store.app.get('bounds'),
+    ...bounds,
     titleBarStyle: 'hidden',
     webPreferences: {
       preload: path.resolve(__dirname, 'preload.js'),
@@ -16,7 +19,7 @@ function createWindow () {
     }
   })
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDev) {
     const rendererPort = process.argv[2]
     mainWindow.loadURL(`http://localhost:${rendererPort}`)
   } else {
@@ -28,7 +31,14 @@ function createWindow () {
   })
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  if (isDev) {
+    const { default: installExtension, VUEJS3_DEVTOOLS } = await import(
+      'electron-devtools-installer'
+    )
+    installExtension(VUEJS3_DEVTOOLS)
+  }
+
   createWindow()
 
   app.on('activate', function () {
@@ -39,8 +49,6 @@ app.whenReady().then(() => {
     }
   })
 })
-
-console.log(app.getPath('userData'))
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()

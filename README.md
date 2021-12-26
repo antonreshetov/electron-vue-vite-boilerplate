@@ -13,6 +13,7 @@ Based on [electron-vue-template](https://github.com/deluze/electron-vue-template
   - Electron store
   - Vue 3
   - Vite 2
+  - TypeScript
 
 ### Development
   - Vue Devtools
@@ -22,7 +23,6 @@ Based on [electron-vue-template](https://github.com/deluze/electron-vue-template
 
 ### Code Style
   - Eslint
-  - Prettier
   - Commitlint
 
 ## Usage
@@ -34,6 +34,6 @@ yarn dev
 ```
 
 ### Build
-```
+```bash
 yarn build
 ```

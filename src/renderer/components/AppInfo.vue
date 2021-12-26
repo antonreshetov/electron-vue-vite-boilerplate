@@ -9,27 +9,18 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { ref } from 'vue'
 import { ipc } from '@/electron'
 
-export default {
-  name: 'AppInfo',
+const info = ref('')
 
-  data () {
-    return {
-      info: {}
-    }
-  },
-
-  created () {
-    ipc.send('request-info', null, (event, message) => {
-      this.info = message
-    })
-  }
-}
+ipc.send('request-info', null, (_, message) => {
+  info.value = message
+})
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #app-info {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

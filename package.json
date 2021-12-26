@@ -10,7 +10,7 @@
     "build": "npm run build:ts && node build/scripts/build.js ",
     "lint": "eslint --ext .js,.ts,.vue . src",
     "lint:fix": "eslint --ext .js,.ts,.vue . --fix src",
-    "release": "bumpp --commit 'build: release v'"
+    "release": "bumpp -c 'build: release v' -t"
   },
   "repository": "https://github.com/antonreshetov/electron-vue-vite-boilerplate",
   "author": {

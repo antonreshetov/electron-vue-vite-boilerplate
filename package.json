@@ -1,21 +1,61 @@
 {
   "name": "electron-vue-vite-boilerplate",
-  "version": "1.0.0",
-  "description": "Electron & Vue 3 application",
-  "main": "build/src/main/index.js",
-  "scripts": {
-    "dev": "tsc-watch -p tsconfig.electron.json --onSuccess 'npm run dev:server'",
-    "dev:server": "node build/scripts/dev-server.js",
-    "build:ts": "tsc -p tsconfig.electron.json",
-    "build": "npm run build:ts && node build/scripts/build.js ",
-    "lint": "eslint --ext .js,.ts,.vue . src",
-    "lint:fix": "eslint --ext .js,.ts,.vue . --fix src",
-    "release": "bumpp -c 'build: release v' -t"
-  },
-  "repository": "https://github.com/antonreshetov/electron-vue-vite-boilerplate",
+  "version": "2.0.0",
+  "description": "Electron Vue Vite Boilerplate for you next project",
   "author": {
     "name": "Anton Reshetov",
-    "url": "https://github.com/antonreshetov"
+    "email": "reshetov.art@gmail.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/antonreshetov/electron-vue-vite-boilerplate",
+  "main": "build/main/index.js",
+  "scripts": {
+    "dev": "npm run build:main && concurrently -k \"vite\" \"npm:dev:main\" \"npm:dev:start\"",
+    "dev:main": "nodemon --watch src/main --exec \"npm run build:main\"",
+    "dev:start": "cross-env NODE_ENV=development electronmon .",
+    "build": "vite build && npm run build:main && electron-builder",
+    "build:mac": "vite build && npm run build:main && electron-builder --mac --x64 --arm64",
+    "build:win": "vite build && npm run build:main && electron-builder --win --x64",
+    "build:linux": "vite build && npm run build:main && electron-builder --linux --x64",
+    "build:all": "vite build && npm run build:main && npm run build:mac && npm run build:win && npm run build:linux",
+    "build:main": "tsc -p tsconfig.main.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "release": "bumpp -c 'build: release v' -t",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "prepare": "simple-git-hooks"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.16.0",
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@types/node": "^22.10.8",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "autoprefixer": "^10.4.20",
+    "bumpp": "^9.10.2",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^34.0.1",
+    "electron-builder": "^25.1.8",
+    "electronmon": "^2.0.3",
+    "eslint": "^9.18.0",
+    "lint-staged": "^15.4.2",
+    "nodemon": "^3.1.9",
+    "postcss": "^8.5.1",
+    "prettier": "^3.4.2",
+    "simple-git-hooks": "^2.11.1",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.11",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "commit-msg": "npx commitlint --edit $1"
   },
   "lint-staged": {
     "*.{js,ts,vue}": [
@@ -23,40 +63,9 @@
       "eslint --fix"
     ]
   },
-  "dependencies": {
-    "electron-store": "^8.0.1",
-    "vue": "^3.2.26"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^15.0.0",
-    "@commitlint/config-conventional": "^15.0.0",
-    "@tsconfig/node14": "^1.0.1",
-    "@types/node": "^17.0.4",
-    "@typescript-eslint/eslint-plugin": "^5.8.0",
-    "@typescript-eslint/parser": "^5.8.0",
-    "@vitejs/plugin-vue": "^1.10.2",
-    "@vue/cli": "^4.5.15",
-    "@vue/eslint-config-standard": "^6.1.0",
-    "bumpp": "^7.1.1",
-    "chalk": "^4.1.2",
-    "chokidar": "^3.5.2",
-    "electron": "^16.0.5",
-    "electron-builder": "^22.14.5",
-    "electron-devtools-installer": "^3.2.0",
-    "eslint": "^8.5.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-vue": "^8.2.0",
-    "husky": "^7.0.4",
-    "lint-staged": "^12.1.4",
-    "prettier": "^2.5.1",
-    "sass": "^1.45.1",
-    "tsc-watch": "^4.6.0",
-    "typescript": "^4.5.4",
-    "vite": "^2.7.6",
-    "vue-tsc": "^0.30.0"
+  "electronmon": {
+    "patterns": [
+      "!src/renderer/**/*"
+    ]
   }
 }

@@ -1,39 +1,35 @@
 <p align="center">
-  <img src="./src/renderer/assets/logo.svg" width="300px">
+  <img src="./logo.png" width="200" >
 </p>
 
-<h1 align="center">Electron Vue Vite Boilerplate</h1>
+<h1 align="center">Electron Vue Boilerplate</h1>
 
-Based on [electron-vue-template](https://github.com/deluze/electron-vue-template) with adds some additional features.
+You can use this boilerplate to start your next project with Electron and Vue.
 
-## Features
+## Stack
 
 ### Core
-  - Electron 16
-  - Electron store
+  - Electron 34
   - Vue 3
-  - Vite 2
-  - TypeScript
-
-### Development
-  - Vue Devtools
+  - Vite 6
 
 ### Style
-  - SCSS
+  - Tailwind CSS 3
 
 ### Code Style
   - Eslint
+  - Prettier
   - Commitlint
 
 ## Usage
 
 ### Development
 ```bash
-yarn
-yarn dev
+pnpm install
+pnpm dev
 ```
 
 ### Build
 ```bash
-yarn build
+pnpm build
 ```

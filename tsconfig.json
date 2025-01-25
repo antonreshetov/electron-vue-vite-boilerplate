@@ -1,19 +1,20 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
     "jsx": "preserve",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
-    "outDir": "./build",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "node",
     "paths": {
-      "@/*": ["./src/renderer/*"]
+      "~/*": ["src/*"],
+      "@/*": ["src/renderer/*"]
     },
+    "resolveJsonModule": true,
+    "types": ["vite/client", "node"],
+    "strict": true,
+    "sourceMap": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/renderer/**/*.ts",
@@ -21,8 +22,5 @@
     "src/renderer/**/*.tsx",
     "src/renderer/**/*.vue",
     "src/main/types"
-  ],
-  "exclude":[
-    "./node_modules"
   ]
 }

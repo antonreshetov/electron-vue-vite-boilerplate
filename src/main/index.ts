@@ -1,68 +1,75 @@
+/* eslint-disable node/prefer-global/process */
+import os from 'node:os'
+import path from 'node:path'
 import { app, BrowserWindow, ipcMain } from 'electron'
-import path from 'path'
-import os from 'os'
 import { store } from './store'
+
+process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true' // Отключаем security warnings
 
 const isDev = process.env.NODE_ENV === 'development'
 
-function createWindow () {
+let mainWindow: BrowserWindow
+let isQuitting = false
+
+function createWindow() {
   const bounds = store.app.get('bounds')
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
     ...bounds,
     titleBarStyle: 'hidden',
     webPreferences: {
-      preload: path.resolve(__dirname, 'preload.js'),
-      nodeIntegration: true,
-      contextIsolation: true
-    }
+      preload: path.join(__dirname, 'preload.js'),
+    },
   })
 
   if (isDev) {
-    const rendererPort = process.argv[2]
-    mainWindow.loadURL(`http://localhost:${rendererPort}`)
-  } else {
-    mainWindow.loadFile(path.resolve(app.getAppPath(), 'renderer/index.html'))
+    mainWindow.loadURL('http://localhost:5173')
+    mainWindow.webContents.openDevTools()
+  }
+  else {
+    mainWindow.loadFile(
+      path.join(__dirname, '../../build/renderer/index.html'),
+    )
   }
 
-  mainWindow.on('close', () => {
+  mainWindow.on('close', (event) => {
     store.app.set('bounds', mainWindow.getBounds())
+
+    if (!isQuitting) {
+      event.preventDefault()
+      mainWindow.hide()
+    }
+    else {
+      mainWindow.destroy()
+    }
   })
 }
 
-app.whenReady().then(async () => {
-  if (isDev) {
-    const { default: installExtension, VUEJS3_DEVTOOLS } = await import(
-      'electron-devtools-installer'
-    )
-    installExtension(VUEJS3_DEVTOOLS)
-  }
+app.whenReady().then(createWindow)
 
-  createWindow()
-
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow()
-    }
-  })
+app.on('activate', () => {
+  mainWindow.show()
 })
 
-app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') app.quit()
+app.on('before-quit', () => {
+  isQuitting = true
 })
 
-// Demo IPC communication
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin')
+    app.quit()
+})
+
 ipcMain.on('message', (event, message) => {
+  // eslint-disable-next-line no-console
   console.log(message)
 })
 
-ipcMain.on('request-info', event => {
+ipcMain.on('request-info', (event) => {
   event.sender.send('request-info', {
     version: app.getVersion(),
     arch: os.arch(),
-    platform: process.platform
+    platform: process.platform,
   })
 })

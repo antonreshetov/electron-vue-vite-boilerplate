@@ -1,6 +1,6 @@
 import type { IpcRendererEvent } from 'electron'
 
-declare interface EventCallback {
+export interface EventCallback {
   (event?: IpcRendererEvent, ...args: any[]): void
 }
 

@@ -1,7 +1,6 @@
-node_modules
 dist
-build
+build/main
+build/renderer
 
-.vscode
-.idea
+node_modules
 .DS_Store

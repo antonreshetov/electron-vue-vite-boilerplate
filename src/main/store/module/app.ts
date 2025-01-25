@@ -6,11 +6,10 @@ interface StoreSchema {
 
 export default new Store<StoreSchema>({
   name: 'app',
-
   schema: {
     bounds: {
       default: {},
-      type: 'object'
-    }
-  }
+      type: 'object',
+    },
+  },
 })

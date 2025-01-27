@@ -1,12 +1,30 @@
 <script setup lang="ts">
-import { ipc } from '@/electron'
+import { db, ipc } from '@/electron'
 import { ref } from 'vue'
 
 const info = ref('')
+const settings = ref({})
+const newValue = ref('')
 
 ipc.send('request-info', null, (_, message) => {
   info.value = message
 })
+
+function getSettings() {
+  db.query('SELECT * FROM settings').then((res) => {
+    settings.value = res[0]
+  })
+}
+
+function updateSettings() {
+  db.query('UPDATE settings SET value = ? WHERE key = ?', [
+    newValue.value,
+    'theme',
+  ])
+  getSettings()
+}
+
+getSettings()
 </script>
 
 <template>
@@ -33,6 +51,21 @@ ipc.send('request-info', null, (_, message) => {
     <RouterView />
     <div class="mt-4 text-gray-500">
       {{ info }}
+      <br>
+      DB Table: settings {{ settings }}
+    </div>
+    <div class="flex gap-2 mt-2">
+      <input
+        v-model="newValue"
+        class="border border-gray-300 rounded-md px-2 w-32"
+        type="text"
+      >
+      <button
+        class="bg-blue-500 rounded-md px-3 py-1 text-white"
+        @click="updateSettings"
+      >
+        Update value
+      </button>
     </div>
   </div>
 </template>

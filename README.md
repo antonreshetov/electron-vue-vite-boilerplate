@@ -12,6 +12,7 @@ You can use this boilerplate to start your next project with Electron and Vue.
   - Electron 34
   - Vue 3
   - Vite 6
+  - SQLite
 
 ### Style
   - Tailwind CSS 3

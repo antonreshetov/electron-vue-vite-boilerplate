@@ -15,4 +15,8 @@ contextBridge.exposeInMainWorld('electron', {
     removeListeners: (channel: string) =>
       ipcRenderer.removeAllListeners(channel),
   },
+  db: {
+    query: (sql: string, params: any[] = []) =>
+      ipcRenderer.invoke('db-query', { sql, params }),
+  },
 })

@@ -23,15 +23,19 @@
     "lint:fix": "eslint --fix .",
     "release": "bumpp -c 'build: release v' -t",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "prepare": "simple-git-hooks"
+    "rebuild": "electron-rebuild",
+    "prepare": "simple-git-hooks && npm run rebuild"
   },
   "dependencies": {
+    "better-sqlite3": "^11.8.1",
     "electron-store": "^8.2.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.16.0",
     "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
+    "@electron/rebuild": "^3.7.1",
+    "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.10.8",
     "@vitejs/plugin-vue": "^5.2.1",
     "autoprefixer": "^10.4.20",

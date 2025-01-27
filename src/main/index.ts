@@ -1,8 +1,13 @@
 /* eslint-disable node/prefer-global/process */
+import type Database from 'better-sqlite3'
+import type { DBQueryArgs } from './types'
 import os from 'node:os'
 import path from 'node:path'
 import { app, BrowserWindow, ipcMain } from 'electron'
+import { initDB } from './db'
 import { store } from './store'
+
+let db: Database.Database
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true' // Отключаем security warnings
 
@@ -46,7 +51,13 @@ function createWindow() {
   })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow()
+
+  db = initDB()
+  const stmt = db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)')
+  stmt.run('theme', 'light')
+})
 
 app.on('activate', () => {
   mainWindow.show()
@@ -72,4 +83,19 @@ ipcMain.on('request-info', (event) => {
     arch: os.arch(),
     platform: process.platform,
   })
+})
+
+ipcMain.handle('db-query', async (event, args: DBQueryArgs) => {
+  const { sql, params = [] } = args
+  const stmt = db.prepare(sql)
+
+  if (/^(?:INSERT|UPDATE|DELETE)/i.test(sql)) {
+    return stmt.run(params)
+  }
+
+  if (/^SELECT/i.test(sql)) {
+    return stmt.all(params)
+  }
+
+  throw new Error('Unsupported query type')
 })

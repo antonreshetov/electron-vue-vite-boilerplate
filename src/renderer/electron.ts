@@ -1,3 +1,3 @@
-const { ipc } = window.electron
+const { ipc, db } = window.electron
 
-export { ipc }
+export { db, ipc }

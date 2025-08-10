@@ -1,6 +1,6 @@
 {
   "watch": ["src/main"],
   "ext": "ts,json",
-  "exec": "npm run build:main",
+  "exec": "tsc -p tsconfig.main.json",
   "delay": 1000
 }

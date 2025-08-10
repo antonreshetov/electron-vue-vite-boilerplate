@@ -1,3 +1,12 @@
+# [2.2.0](https://github.com/antonreshetov/electron-vue-vite-boilerplate/compare/v2.1.0...v2.2.0) (2025-08-10)
+
+
+### Bug Fixes
+
+* update Vite config to use correct renderer path ([b21cd87](https://github.com/antonreshetov/electron-vue-vite-boilerplate/commit/b21cd878fce05cfadfefafdef5d92734e8764abc))
+
+
+
 # [2.1.0](https://github.com/antonreshetov/electron-vue-vite-boilerplate/compare/v2.0.0...v2.1.0) (2025-01-27)
 
 

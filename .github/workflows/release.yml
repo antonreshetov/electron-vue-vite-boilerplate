@@ -81,12 +81,33 @@ jobs:
           # Avoid snap in CI for reliability; build AppImage only
           pnpm exec electron-builder --linux AppImage --x64
 
-      - name: Upload artifacts (${{ matrix.os }})
+      - name: Upload artifacts (macOS)
+        if: startsWith(matrix.os, 'macos')
         uses: actions/upload-artifact@v4
         with:
-          name: dist-${{ matrix.os }}
+          name: dist-mac
           path: |
-            dist/**
+            dist/*.dmg
+            dist/*.pkg
+          if-no-files-found: error
+
+      - name: Upload artifacts (Windows)
+        if: startsWith(matrix.os, 'windows')
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-win
+          path: |
+            dist/*.exe
+            dist/*.msi
+          if-no-files-found: error
+
+      - name: Upload artifacts (Linux)
+        if: startsWith(matrix.os, 'ubuntu')
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-linux
+          path: |
+            dist/*.AppImage
           if-no-files-found: error
 
   release:

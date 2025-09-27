@@ -1,0 +1,104 @@
+name: Build and Draft Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g., v1.2.3)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (macOS)
+        if: startsWith(matrix.os, 'macos')
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: |
+          pnpm vite build
+          pnpm run build:main
+          pnpm exec electron-builder --mac --x64 --arm64
+
+      - name: Build (Windows)
+        if: startsWith(matrix.os, 'windows')
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: |
+          pnpm vite build
+          pnpm run build:main
+          pnpm exec electron-builder --win --x64
+
+      - name: Build (Linux, AppImage only)
+        if: startsWith(matrix.os, 'ubuntu')
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+        run: |
+          pnpm vite build
+          pnpm run build:main
+          # Avoid snap in CI for reliability; build AppImage only
+          pnpm exec electron-builder --linux AppImage --x64
+
+      - name: Upload artifacts (${{ matrix.os }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ matrix.os }}
+          path: |
+            dist/**
+          if-no-files-found: error
+
+  release:
+    name: Create draft release and upload assets
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/') }}
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List downloaded files (debug)
+        run: |
+          echo "Downloaded artifacts:"
+          ls -R artifacts
+
+      - name: Create draft release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          name: Release ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          files: |
+            artifacts/**
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

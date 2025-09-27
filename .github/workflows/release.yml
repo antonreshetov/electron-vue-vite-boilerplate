@@ -9,6 +9,10 @@ on:
       tag:
         description: 'Tag to release (e.g., v1.2.3)'
         required: true
+      allowLockfileUpdate:
+        description: Allow updating pnpm-lock.yaml during install (useful for manual runs)
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -37,9 +41,15 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
-
-      - name: Install dependencies
+      # Strict install for tagged releases (reproducible builds)
+      - name: Install dependencies (frozen lockfile)
+        if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') || (github.event_name == 'workflow_dispatch' && inputs.allowLockfileUpdate != 'true') }}
         run: pnpm install --frozen-lockfile
+
+      # More permissive for manual runs when explicitly allowed
+      - name: Install dependencies (allow lockfile update)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.allowLockfileUpdate == 'true' }}
+        run: pnpm install
 
       - name: Build (macOS)
         if: startsWith(matrix.os, 'macos')

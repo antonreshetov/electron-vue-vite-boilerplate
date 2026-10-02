@@ -1,5 +1,5 @@
-import app from './module/app'
+import createAppStore from './module/app'
 
-export const store = {
-  app,
+export async function createStore() {
+  return { app: await createAppStore() }
 }

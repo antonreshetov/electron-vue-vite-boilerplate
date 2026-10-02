@@ -2,16 +2,25 @@
   "compilerOptions": {
     "target": "ESNext",
     "jsx": "preserve",
-    "lib": ["ESNext", "DOM"],
-    "baseUrl": ".",
+    "lib": [
+      "ESNext",
+      "DOM"
+    ],
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
-      "~/*": ["src/*"],
-      "@/*": ["src/renderer/*"]
+      "~/*": [
+        "./src/*"
+      ],
+      "@/*": [
+        "./src/renderer/*"
+      ]
     },
     "resolveJsonModule": true,
-    "types": ["vite/client", "node"],
+    "types": [
+      "vite/client",
+      "node"
+    ],
     "strict": true,
     "sourceMap": true,
     "esModuleInterop": true

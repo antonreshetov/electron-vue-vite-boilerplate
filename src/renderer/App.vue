@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { db, ipc } from '@/electron'
 import { ref } from 'vue'
+import { db, ipc } from '@/electron'
 
 const info = ref('')
 const settings = ref({})

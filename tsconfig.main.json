@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "ES2023",
     "rootDir": "src/main",
-    "module": "CommonJS",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "inlineSources": true,
     "outDir": "build/main",
@@ -10,5 +11,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src/main/**/*"]
+  "include": [
+    "src/main/**/*"
+  ]
 }

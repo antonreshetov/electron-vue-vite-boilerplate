@@ -5,9 +5,11 @@ import os from 'node:os'
 import path from 'node:path'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import { initDB } from './db'
-import { store } from './store'
+import { createStore } from './store'
+import { checkForUpdates, initializeUpdates } from './updates'
 
 let db: Database.Database
+let store: Awaited<ReturnType<typeof createStore>>
 
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true' // Отключаем security warnings
 
@@ -29,7 +31,7 @@ function createWindow() {
   })
 
   if (isDev) {
-    mainWindow.loadURL('http://localhost:5173')
+    mainWindow.loadURL('http://127.0.0.1:5173')
     mainWindow.webContents.openDevTools()
   }
   else {
@@ -51,16 +53,22 @@ function createWindow() {
   })
 }
 
-app.whenReady().then(() => {
-  createWindow()
+app.whenReady().then(async () => {
+  store = await createStore()
 
   db = initDB()
-  const stmt = db.prepare('INSERT INTO settings (key, value) VALUES (?, ?)')
+  const stmt = db.prepare(
+    'INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)',
+  )
   stmt.run('theme', 'light')
+  createWindow()
+  initializeUpdates(() => {
+    isQuitting = true
+  })
 })
 
 app.on('activate', () => {
-  mainWindow.show()
+  mainWindow?.show()
 })
 
 app.on('before-quit', () => {
@@ -99,3 +107,5 @@ ipcMain.handle('db-query', async (event, args: DBQueryArgs) => {
 
   throw new Error('Unsupported query type')
 })
+
+ipcMain.handle('updates:check', () => checkForUpdates(true))

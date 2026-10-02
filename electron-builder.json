@@ -10,21 +10,43 @@
     "!build/**/*.map"
   ],
   "mac": {
-    "target": "dmg",
-    "icon": "build/icons/icon.icns"
+    "target": [
+      "dmg",
+      "zip"
+    ],
+    "icon": "build/icons/icon.icns",
+    "hardenedRuntime": true,
+    "notarize": true,
+    "entitlements": "build/entitlements.mac.plist"
   },
   "win": {
-    "target": ["nsis", "portable"],
+    "target": [
+      "nsis",
+      "portable"
+    ],
     "icon": "build/icons/icon.ico"
   },
   "linux": {
-    "target": ["AppImage", "snap"],
+    "target": [
+      "AppImage",
+      "snap"
+    ],
     "icon": "build/icons/icon.png"
   },
   "nsis": {
     "oneClick": false,
     "perMachine": false,
     "allowToChangeInstallationDirectory": true,
-    "shortcutName": "Electron App"
-  }
+    "shortcutName": "Electron App",
+    "artifactName": "${name}-${version}-${arch}-setup.${ext}"
+  },
+  "publish": {
+    "provider": "github",
+    "owner": "antonreshetov",
+    "repo": "electron-vue-vite-boilerplate"
+  },
+  "portable": {
+    "artifactName": "${name}-${version}-${arch}-portable.${ext}"
+  },
+  "artifactName": "${name}-${version}-${os}-${arch}.${ext}"
 }

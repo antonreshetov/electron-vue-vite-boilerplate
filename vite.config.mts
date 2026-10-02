@@ -1,17 +1,18 @@
 import path from 'node:path'
+import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 
-const root = path.resolve(__dirname)
-const rootSrc = path.resolve(__dirname, 'src')
-const rootRenderer = path.resolve(__dirname, 'src/renderer')
+const root = path.resolve(import.meta.dirname)
+const rootSrc = path.resolve(import.meta.dirname, 'src')
+const rootRenderer = path.resolve(import.meta.dirname, 'src/renderer')
 
 export default defineConfig({
   root: rootRenderer,
   base: './',
-  plugins: [vue()],
+  plugins: [vue(), tailwindcss()],
   build: {
-    outDir: path.resolve(__dirname, 'build/renderer'),
+    outDir: path.resolve(import.meta.dirname, 'build/renderer'),
     emptyOutDir: true,
   },
   resolve: {
@@ -25,6 +26,9 @@ export default defineConfig({
     'process': {},
   },
   server: {
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
     watch: {
       ignored: [
         `${root}/scripts/**/*`,

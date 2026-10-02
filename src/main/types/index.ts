@@ -18,6 +18,9 @@ declare global {
         removeListener: (channel: string, cb: EventCallback) => void
         removeListeners: (channel: string) => void
       }
+      updates: {
+        check: () => Promise<void>
+      }
       db: {
         query: (sql: string, params?: any[]) => Promise<any>
       }
